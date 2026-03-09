@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include "BoardService.h"
 #include "GameService.h"
+#include "Legality.h"
 
 void startingBoard(Board* board) {
  for (int i = 8; i<16;i++) {
@@ -96,6 +97,9 @@ game->board->boardPositions[move.moveTo].color = game->board->boardPositions[mov
 game->board->boardPositions[move.moveTo].type = game->board->boardPositions[move.moveFrom].type;
 game->board->boardPositions[move.moveFrom].type = EMPTY;
 game->board->boardPositions[move.moveFrom].color = NO_COLOR;
+    } else {
+        game->Status = "can't remove Piece";
+        return;
     }
 }
 }
@@ -103,4 +107,61 @@ game->board->boardPositions[move.moveFrom].color = NO_COLOR;
     game->Status = "no Piece exists on that position";
     return;
 }
+if(game->currentPlayerIdx == 0) {
+game->player1->actionCount++;
+} else game->player2->actionCount++;
+endTurn(game);
+}
+
+void callLegalities(ChessGame * game , Move move){
+    Board gameBoard;
+    gameBoard = *(game->board);
+    if(gameBoard.boardPositions[move.moveFrom].type == PAWN) pawnLegality(game , move);
+    else if (gameBoard.boardPositions[move.moveFrom].type == ROOK) rookLegality(game,move);
+    else if(gameBoard.boardPositions[move.moveFrom].type == KING) kingLegality(game,move);
+    else if(gameBoard.boardPositions[move.moveFrom].type == QUEEN) queenLegality(game,move);
+    else if(gameBoard.boardPositions[move.moveFrom].type == KNIGHT)knightLegality(game,move);
+    else if (gameBoard.boardPositions[move.moveFrom].type == BISHOP) bishopLegality(game,move);
+    else {
+       game->Status = "Piece is Empty";
+        return;
+         }
+}
+
+
+void checkPlayerTurn(ChessGame * game , Move move) {
+      char* status = checkGameStatus(game);
+    if(status != NULL) {
+        printf("%s\n" , status);
+        return;
+    }
+    if(move.moveFrom>=64 || move.moveFrom < 0) {
+        game->Status = "no such Piece exists in that position , unknown locaton";
+        return;
+    }
+    if(move.moveTo>=64 || move.moveTo< 0) {
+        game->Status = "out of bound moves";
+        return;
+    }
+    Board gameBoard;
+    gameBoard = *(game->board);
+    if(game->currentPlayerIdx == 0) {
+        if(gameBoard.boardPositions[move.moveFrom].color == WHITE) {
+        callLegalities(game,move);
+        } else {
+            game->Status = "Player 1 can only control White Pieces";
+            return;
+        }
+    } else if(game->currentPlayerIdx == 1) {
+        if(gameBoard.boardPositions[move.moveFrom].color == BLACK) {
+             callLegalities(game,move);
+        } else {
+            game->Status = "Player 2 can only control Black Pieces";
+            return;
+        }    
+    } else {
+        game->Status = "no 3rd Player";
+        return;
+    }
+    return;
 }

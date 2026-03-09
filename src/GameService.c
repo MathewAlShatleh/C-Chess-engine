@@ -34,6 +34,7 @@ void startGame (ChessGame *game) {
  char *status = checkGameStatus(game);
 if(status != NULL) {
  printf("%s\n" , status);
+ return;
 }
     int size1 = get_String_Size(game->player1->playerName);
     int size2 = get_String_Size(game->player2->playerName);

@@ -10,8 +10,8 @@ ChessGame * initializeGame() {
     game->log[0] = '\0';
     game->Status = NULL;
     for(int i = 0; i<31;i++) {
-    game->removedPieces->color = NO_COLOR;
-    game->removedPieces->type = EMPTY;
+    game->removedPieces[i].color = NO_COLOR;
+    game->removedPieces[i].type = EMPTY;
     }
     game->removedPiecesCounter = 0;
     return game;
