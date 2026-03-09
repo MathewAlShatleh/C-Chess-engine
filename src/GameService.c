@@ -55,9 +55,26 @@ if(status != NULL) {
    } else snprintf(game->log, 256, "%s starts!" , game->player2->playerName);
 }
 void endGame (ChessGame *game) {
-checkGameStatus(game);
-
+char *status = checkGameStatus(game);
+if(status != NULL) {
+ printf("%s\n" , status);
+ return;
 }
+int i = 0;
+for(i = 0; i<=30;i++) {
+    if(game->removedPieces[i].type == KING && game->removedPieces[i].color == BLACK) {
+        game->Status = "player1 won!!!";
+        return;
+    }else if(game->removedPieces[i].type == KING && game->removedPieces[i].color == WHITE) {
+        game->Status = "player2 won!!";
+        return;
+    } 
+}
+if(game->removedPieces[i-1].type != KING){
+game->Status = "still no winner have been found";
+}
+}
+
 
 void endTurn(ChessGame *game) {
 char *status = checkGameStatus(game);

@@ -6,6 +6,7 @@
 void startingBoard(Board* board);
 Piece* removePiece(int postion , ChessGame* game);
 void movePiece(ChessGame * game , Move move);
+void checkPlayerTurn(ChessGame * game , Move move);
 
 
 #endif
